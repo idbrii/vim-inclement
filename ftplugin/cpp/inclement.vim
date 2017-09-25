@@ -38,6 +38,12 @@ end
 let s:save_cpo = &cpo
 set cpo&vim
 
+noremap <unique> <script> <Plug>CppAddIncludeForTag <SID>AddIncludeForTag
+noremap <unique> <script> <Plug>CppFixHeaderGuard <SID>FixHeaderGuard
+
+noremap <SID>AddIncludeForTag :call inclement#impl#AddIncludeForTag_Impl(expand("<cword>"))<CR>
+noremap <SID>FixHeaderGuard :call inclement#impl#FixGuard()<CR>
+
 if (! exists('no_plugin_maps') || ! no_plugin_maps) &&
       \ (! exists('no_inclement_maps') || ! no_inclement_maps)
 
@@ -48,12 +54,6 @@ if (! exists('no_plugin_maps') || ! no_plugin_maps) &&
     if !hasmapto('<Plug>CppFixHeaderGuard')
         map <unique> <Leader>hg <Plug>CppFixHeaderGuard
     endif
-
-    noremap <unique> <script> <Plug>CppAddIncludeForTag <SID>AddIncludeForTag
-    noremap <unique> <script> <Plug>CppFixHeaderGuard <SID>FixHeaderGuard
-
-    noremap <SID>AddIncludeForTag :call inclement#impl#AddIncludeForTag_Impl(expand("<cword>"))<CR>
-    noremap <SID>FixHeaderGuard :call inclement#impl#FixGuard()<CR>
 endif
 
 if (! exists('no_plugin_menus') || ! no_plugin_menus) &&
