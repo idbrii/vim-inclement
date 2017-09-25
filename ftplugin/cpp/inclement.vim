@@ -1,6 +1,6 @@
-" File: cpp_header.vim -- Great stuff for headers
+" File: vim-inclement -- Great stuff for includes
 " Maintainer: David Briscoe (idbrii@gmail.com)
-" Version: 0.1
+" Version: 0.2
 " based on dice.vim by Andreas Fredriksson
 "
 " Functionality:
@@ -13,24 +13,24 @@
 "
 
 " Protect against multiple reloads
-if exists("loaded_cppheader")
+if exists("loaded_inclement")
 	finish
 endif
-let loaded_cppheader = 1
+let loaded_inclement = 1
 
 
 " Ensure our settings variables exist and set defaults
-if !exists('g:cpp_header_use_preview')
-    let g:cpp_header_use_preview = 0
+if !exists('g:inclement_use_preview')
+    let g:inclement_use_preview = 0
 end
-if !exists('g:cpp_header_n_dir_to_trim')
-    let g:cpp_header_n_dir_to_trim = 0
+if !exists('g:inclement_n_dir_to_trim')
+    let g:inclement_n_dir_to_trim = 0
 end
-if !exists('g:cpp_header_max_element_in_path')
-    let g:cpp_header_max_element_in_path = 0
+if !exists('g:inclement_max_element_in_path')
+    let g:inclement_max_element_in_path = 0
 end
-if !exists('g:cpp_header_after_first_include')
-    let g:cpp_header_after_first_include = 0
+if !exists('g:inclement_after_first_include')
+    let g:inclement_after_first_include = 0
 end
 
 
@@ -129,7 +129,7 @@ function! s:InsertHeader(path)
         " Include already exists. Inform the user.
 
         call setpos(".", l:save_cursor)
-        if ( g:cpp_header_use_preview )
+        if ( g:inclement_use_preview )
             " Use the preview window to show the include
             set previewheight=1
             silent exec "pedit +" . l:iline
@@ -141,7 +141,7 @@ function! s:InsertHeader(path)
         return
 	endif
 
-	if ( g:cpp_header_after_first_include )
+	if ( g:inclement_after_first_include )
 		" Search forwards for the first include.
 		normal 0G
 		let l:flags = ''
@@ -154,7 +154,7 @@ function! s:InsertHeader(path)
 	" append append on the first line in the file.
 	let l:to_insert_after = search('^\s*#\s*include', l:flags)
 
-    if ( g:cpp_header_use_preview )
+    if ( g:inclement_use_preview )
         " Use the preview window to show the include
         " Use height=2 because we open preview before we put line (to
         " avoid unsaved error). So we show the line before and the include.
@@ -172,19 +172,19 @@ function! s:InsertHeader(path)
     " We always insert quotes around include, so we can assume there's a quote
     " at the start.
     normal jf"l
-    if g:cpp_header_n_dir_to_trim > 0
-        exec "normal " . g:cpp_header_n_dir_to_trim . "df/"
+    if g:inclement_n_dir_to_trim > 0
+        exec "normal " . g:inclement_n_dir_to_trim . "df/"
     endif
-    if g:cpp_header_max_element_in_path > 0
+    if g:inclement_max_element_in_path > 0
 		normal! $
-        exec 'normal! ' . g:cpp_header_max_element_in_path . 'T/dT"'
+        exec 'normal! ' . g:inclement_max_element_in_path . 'T/dT"'
     endif
     normal! 0f"l
 
     " Set lastpos mark so you can easily jump back to coding with ``
     call setpos("'`", l:save_cursor)
 
-    if ( g:cpp_header_use_preview )
+    if ( g:inclement_use_preview )
         " We have the preview window, so main doesn't need to show include
         call setpos(".", l:save_cursor)
     endif
@@ -204,7 +204,7 @@ endfunction
 
 
 if (! exists('no_plugin_maps') || ! no_plugin_maps) &&
-      \ (! exists('no_cpp_header_maps') || ! no_cpp_header_maps)
+      \ (! exists('no_inclement_maps') || ! no_inclement_maps)
 
     if !hasmapto('<Plug>CppAddIncludeForTag')
         map <unique> <Leader>hi <Plug>CppAddIncludeForTag
@@ -222,7 +222,7 @@ if (! exists('no_plugin_maps') || ! no_plugin_maps) &&
 endif
 
 if (! exists('no_plugin_menus') || ! no_plugin_menus) &&
-      \ (! exists('no_cpp_header_menus') || ! no_cpp_header_menus)
+      \ (! exists('no_inclement_menus') || ! no_inclement_menus)
 
     noremenu <script> Cpp.Add\ Include\ for\ Symbol <SID>AddIncludeForTag
     noremenu <script> Cpp.Fix\ Header\ Guard <SID>FixHeaderGuard
