@@ -18,6 +18,13 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! s:has_filter(ft)
+    let func = 'autoload/inclement/ft/'.a:ft.'.vim'
+    return !empty(globpath(&runtimepath, func))
+endfunction
+
+
+
 " Function: FixGuard()
 " Purpose: Update the header guards in the current buffer.
 " Only supports C++
@@ -92,7 +99,7 @@ function! s:InsertHeader(taginfo)
         let l:path = fnamemodify(l:path, ':r')
     endif
     " TODO: Error if filetype is not implemented.
-    exec 'let l:import_cmd = inclement#ft#'. &filetype .'#GetImport(a:taginfo[1])'
+    let l:import_cmd = inclement#ft#{&filetype}#GetImport(a:taginfo[1])
 
     " Only use the base name for higher likelihood of matches
     let l:filename = fnamemodify(l:path, ':t')
@@ -107,7 +114,7 @@ function! s:InsertHeader(taginfo)
     endif
 
     " Check if include already exists
-    exec 'let l:pattern = inclement#ft#'. &filetype .'#GetExistingImportRegex(l:filename)'
+    let l:pattern = inclement#ft#{&filetype}#GetExistingImportRegex(l:filename)
 	let l:iline = search(l:pattern)
 	if l:iline > 0
         " Include already exists. Inform the user.
@@ -175,7 +182,14 @@ function! s:InsertHeader(taginfo)
 endfunction
 
 function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
-    exec 'call inclement#ft#'. &filetype .'#init()'
+    if !s:has_filter(&filetype)
+      if get(g:, 'inclement_report_ft_error', 1)
+        echoerr 'inclement does not yet support '. &filetype
+      endif
+      return
+    endif
+    call inclement#ft#{&filetype}#init()
+
 	let l:header = s:GetHeaderForTag(a:tag_expr)
 
 	if len(l:header) == 0
