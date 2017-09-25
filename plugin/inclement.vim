@@ -1,15 +1,11 @@
 " File: vim-inclement -- Great stuff for includes
 " Maintainer: David Briscoe (idbrii@gmail.com)
-" Version: 0.2
+" Version: 0.3
 " based on dice.vim by Andreas Fredriksson
 "
 " Functionality:
+"   * Add the header/require for a tag
 "   * Fix header guards
-"   * Add the header for a tag
-"
-" TODO: Add forward declare
-"       Jump to include on insert? -- need something since the includes are
-"       big ugly paths since my tags aren't awesome.
 "
 
 " Protect against multiple reloads
@@ -38,8 +34,8 @@ end
 let s:save_cpo = &cpo
 set cpo&vim
 
-noremap <unique> <script> <Plug>CppAddIncludeForTag <SID>AddIncludeForTag
-noremap <unique> <script> <Plug>CppFixHeaderGuard <SID>FixHeaderGuard
+noremap <unique> <script> <Plug>InclementAddIncludeForTag <SID>AddIncludeForTag
+noremap <unique> <script> <Plug>InclementFixHeaderGuard <SID>FixHeaderGuard
 
 noremap <SID>AddIncludeForTag :call inclement#impl#AddIncludeForTag_Impl(expand("<cword>"))<CR>
 noremap <SID>FixHeaderGuard :call inclement#impl#FixGuard()<CR>
@@ -47,20 +43,20 @@ noremap <SID>FixHeaderGuard :call inclement#impl#FixGuard()<CR>
 if (! exists('no_plugin_maps') || ! no_plugin_maps) &&
       \ (! exists('no_inclement_maps') || ! no_inclement_maps)
 
-    if !hasmapto('<Plug>CppAddIncludeForTag')
-        map <unique> <Leader>hi <Plug>CppAddIncludeForTag
+    if !hasmapto('<Plug>InclementAddIncludeForTag')
+        map <unique> <Leader>hi <Plug>InclementAddIncludeForTag
     endif
 
-    if !hasmapto('<Plug>CppFixHeaderGuard')
-        map <unique> <Leader>hg <Plug>CppFixHeaderGuard
+    if !hasmapto('<Plug>InclementFixHeaderGuard')
+        map <unique> <Leader>hg <Plug>InclementFixHeaderGuard
     endif
 endif
 
 if (! exists('no_plugin_menus') || ! no_plugin_menus) &&
       \ (! exists('no_inclement_menus') || ! no_inclement_menus)
 
-    noremenu <script> Cpp.Add\ Include\ for\ Symbol <SID>AddIncludeForTag
-    noremenu <script> Cpp.Fix\ Header\ Guard <SID>FixHeaderGuard
+    noremenu <script> Inclement.Add\ Include\ for\ Symbol <SID>AddIncludeForTag
+    noremenu <script> Inclement.Fix\ Header\ Guard <SID>FixHeaderGuard
 endif
 
 " Reset compat options

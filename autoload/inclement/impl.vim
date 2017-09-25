@@ -1,11 +1,4 @@
 " File: vim-inclement -- Great stuff for includes
-" Maintainer: David Briscoe (idbrii@gmail.com)
-" Version: 0.3
-" based on dice.vim by Andreas Fredriksson
-"
-" Functionality:
-"   * Add the header/require for a tag
-"   * Fix header guards
 "
 " TODO: Add forward declare
 "       Jump to include on insert? -- need something since the includes are
