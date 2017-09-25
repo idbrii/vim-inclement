@@ -1,28 +1,26 @@
 " File: vim-inclement -- Great stuff for includes
 " Maintainer: David Briscoe (idbrii@gmail.com)
-" Version: 0.2
+" Version: 0.3
 " based on dice.vim by Andreas Fredriksson
 "
 " Functionality:
+"   * Add the header/require for a tag
 "   * Fix header guards
-"   * Add the header for a tag
 "
 " TODO: Add forward declare
 "       Jump to include on insert? -- need something since the includes are
 "       big ugly paths since my tags aren't awesome.
+"       Make filetype-specific options.
 "
 
 " Save compatibility options
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Configurable options
-let s:header_extensions = ["h", "hpp", "hh", "hxx"]
-
-
 
 " Function: FixGuard()
 " Purpose: Update the header guards in the current buffer.
+" Only supports C++
 "
 " Given club/barmanager.h, this produces the header guard BARMANAGER_H.
 function! inclement#impl#FixGuard()
@@ -75,21 +73,29 @@ function! s:GetHeaderForTag(tag_expr)
 		let l:fnext = fnamemodify(l:fn, ":e")
 
 		" Use header files straight away.
-		if index(s:header_extensions, l:fnext) >= 0
-			return l:fn
+		if index(b:inclement_header_extensions, l:fnext) >= 0
+			return [l:fn, tag]
 		endif
 
 	endfor
-	return ''
+	return []
 endfunction
 
 " Purpose: Add a header path to the file.
-function! s:InsertHeader(path)
+function! s:InsertHeader(taginfo)
     " Save the current cursor so we can restore on error or completion
 	let l:save_cursor = getpos(".")
 
+    let l:path = a:taginfo[0]
+    if !b:inclement_is_extension_relevant
+        " Strip the extension.
+        let l:path = fnamemodify(l:path, ':r')
+    endif
+    " TODO: Error if filetype is not implemented.
+    exec 'let l:import_cmd = inclement#ft#'. &filetype .'#GetImport(a:taginfo[1])'
+
     " Only use the base name for higher likelihood of matches
-    let l:filename = fnamemodify(a:path, ':t')
+    let l:filename = fnamemodify(l:path, ':t')
 
     " Check if including the current file
     let l:currentfile = expand('%:b')
@@ -101,7 +107,7 @@ function! s:InsertHeader(path)
     endif
 
     " Check if include already exists
-	let l:pattern = '\v^\s*#\s*include\s*["<](.*[\/\\])?' . l:filename . '[">]'
+    exec 'let l:pattern = inclement#ft#'. &filetype .'#GetExistingImportRegex(l:filename)'
 	let l:iline = search(l:pattern)
 	if l:iline > 0
         " Include already exists. Inform the user.
@@ -130,7 +136,7 @@ function! s:InsertHeader(path)
 	endif
 	" search() will return 0 if there are no matches, which will make the
 	" append append on the first line in the file.
-	let l:to_insert_after = search('^\s*#\s*include', l:flags)
+	let l:to_insert_after = search(b:inclement_find_import_re, l:flags)
 
     if ( g:inclement_use_preview )
         " Use the preview window to show the include
@@ -141,7 +147,7 @@ function! s:InsertHeader(path)
     endif
 
     " We only support quotes! See below.
-	let l:text = '#include "' . a:path . '"'
+	let l:text = l:import_cmd. '"' . l:path . '"'
 	call append(l:to_insert_after, l:text)
     " We inserted a line, so change the cursor position
     let l:save_cursor[1] += 1
@@ -169,9 +175,10 @@ function! s:InsertHeader(path)
 endfunction
 
 function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
+    exec 'call inclement#ft#'. &filetype .'#init()'
 	let l:header = s:GetHeaderForTag(a:tag_expr)
 
-	if l:header == ''
+	if len(l:header) == 0
 		echo "No header declaring '" . a:tag_expr . "' found in tags"
 		return
 	endif
