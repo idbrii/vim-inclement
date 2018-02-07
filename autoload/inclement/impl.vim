@@ -159,11 +159,20 @@ function! s:InsertHeader(taginfo)
     if g:inclement_n_dir_to_trim > 0
         exec "normal! " . g:inclement_n_dir_to_trim . "df/"
     endif
-    if g:inclement_max_element_in_path > 0
+    " HACK: To allow C# to strip entire path, introduce a buffer-local max
+    " element. This doesn't make much sense when not using files.
+    let max_element_in_path = get(b:, 'inclement_max_element_in_path', g:inclement_max_element_in_path)
+    if max_element_in_path > 0
 		normal! $
-        exec 'normal! ' . g:inclement_max_element_in_path . 'T/dT"'
+        exec 'normal! ' . max_element_in_path . 'T/dT"'
     endif
     normal! 0f"l
+
+    " TODO: to support C#, we need to remove requirement for quotes.
+    " HACK: For now, do some fixup. Requires on vim-surround.
+    if &filetype == 'cs'
+        normal ca";
+    endif
 
     " Set lastpos mark so you can easily jump back to coding with ``
     call setpos("'`", l:save_cursor)
