@@ -127,11 +127,11 @@ function! s:InsertHeader(taginfo)
 
 	if ( g:inclement_after_first_include )
 		" Search forwards for the first include.
-		normal 0G
+		normal! 0G
 		let l:flags = ''
 	else
 		" Search backwards for the last include.
-		normal G
+		normal! G
 		let l:flags = 'b'
 	endif
 	" search() will return 0 if there are no matches, which will make the
@@ -155,9 +155,9 @@ function! s:InsertHeader(taginfo)
     " Get in position to fix the include and auto trim some directories.
     " We always insert quotes around include, so we can assume there's a quote
     " at the start.
-    normal jf"l
+    normal! jf"l
     if g:inclement_n_dir_to_trim > 0
-        exec "normal " . g:inclement_n_dir_to_trim . "df/"
+        exec "normal! " . g:inclement_n_dir_to_trim . "df/"
     endif
     if g:inclement_max_element_in_path > 0
 		normal! $
