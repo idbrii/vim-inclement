@@ -22,6 +22,10 @@ function! inclement#ft#lua#GetPrefix(tag_dict)
     endif
 endf
 
+function! inclement#ft#lua#ConvertFilepathToImportPath(path)
+    return substitute(a:path, '\V/', '.', 'g')
+endf
+
 function! inclement#ft#lua#GetImport(tag_dict)
     return inclement#ft#lua#GetPrefix(a:tag_dict). 'require '
 endf

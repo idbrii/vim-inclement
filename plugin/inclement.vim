@@ -28,6 +28,11 @@ end
 if !exists('g:inclement_after_first_include')
     let g:inclement_after_first_include = 0
 end
+" When you setup your project, set this to the root of your source folder so
+" we can strip this path from any includes.
+if !exists('g:inclement_src_root')
+    let g:inclement_src_root = ''
+end
 
 
 " Save compatibility options

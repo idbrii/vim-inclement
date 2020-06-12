@@ -11,6 +11,11 @@ function! inclement#ft#cpp#GetExistingImportRegex(imported_file)
     return '\v^\s*#\s*include\s*["<](.*[\/\\])?'. a:imported_file .'[">]'
 endf
 
+function! inclement#ft#cpp#ConvertFilepathToImportPath(path)
+    " No fixup required.
+    return a:path
+endf
+
 function! inclement#ft#cpp#GetImport(tag_dict)
     return '#include '
 endf

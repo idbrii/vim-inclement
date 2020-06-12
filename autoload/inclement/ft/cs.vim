@@ -14,6 +14,12 @@ function! inclement#ft#cs#GetExistingImportRegex(imported_file)
     return '\v^.*<using>\s+.*'. a:imported_file .';'
 endf
 
+function! inclement#ft#cs#ConvertFilepathToImportPath(path)
+    " No fixup required. We stripped the entire path (C# module paths don't
+    " necessarily have any relationship to their file paths).
+    return a:path
+endf
+
 function! inclement#ft#cs#GetImport(tag_dict)
     return 'using '. get(a:tag_dict, 'namespace', 'error: no import without namespace')
 endf
