@@ -93,7 +93,6 @@ function! s:InsertHeader(taginfo)
     endif
     let src_root = get(b:, 'inclement_src_root', g:inclement_src_root)
     let l:path = substitute(l:path, '\V'.. src_root, '', '')
-    let l:path = inclement#ft#{&filetype}#ConvertFilepathToImportPath(l:path)
 
     " TODO: Error if filetype is not implemented.
     let l:import_cmd = inclement#ft#{&filetype}#GetImport(a:taginfo[1])
@@ -150,6 +149,7 @@ function! s:InsertHeader(taginfo)
         silent exec "pedit +" . l:to_insert_after
     endif
 
+    let l:path = inclement#ft#{&filetype}#ConvertFilepathToImportPath(l:path)
     " We only support quotes! See below.
 	let l:text = l:import_cmd. '"' . l:path . '"'
 	call append(l:to_insert_after, l:text)
