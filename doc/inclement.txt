@@ -1,0 +1,62 @@
+*inclement.txt*	Implement import statements from tags with inclement.
+
+==============================================================================
+                                                  *inclement*
+Introduction~
+
+vim-inclement provides a mapping to add an import (include/require/...) for the
+symbol under the cursor based on your tags file.
+
+Use `<Leader>hi` to insert an import.
+
+vim-inclement will detect if you've already imported the file.
+
+There are some configuration options for how and where to insert your imports.
+See the top of inclement.vim.
+
+						  *inclement-requirements*
+inclement Requirements~
+
+inclement requires a tags file. It uses vim's |taglist| command.
+
+						  *inclement-mappings*
+Mappings~
+
+<Plug>InclementAddIncludeForTag			  *InclementAddIncludeForTag*
+                Add an include for the tag under the cursor.
+
+<Plug>InclementFixHeaderGuard			  *InclementFixHeaderGuard*
+		Insert or adjust the C++-style header include guard.
+
+==============================================================================
+						  *inclement-configuration*
+Configuration~
+
+g:inclement_use_preview                           *g:inclement_use_preview*
+        Default: 0
+        Open the preview window to show the new include.
+
+g:inclement_n_dir_to_trim                         *g:inclement_n_dir_to_trim*
+        Default: 0
+        Trim this many directories from the tag path for the include. If you
+        often have the same number of paths leading up to your include
+        directory, this can be useful to clean it up.
+
+g:inclement_max_element_in_path                   *g:inclement_max_element_in_path*
+        Default: 0
+        Limit the number of directories/files in the include path. If your
+        includes only use a single token, then set this to 1.
+
+g:inclement_after_first_include                   *g:inclement_after_first_include*
+        Default: 0
+        Place the include after the first include in the file. Otherwise it's
+        after the last include.
+
+g:inclement_src_root                              *g:inclement_src_root*
+        Default: ''
+        When you setup your project, set this to the root of your source
+        folder so we can strip this path from any includes.
+
+==============================================================================
+
+ vim:tw=78:ts=8:ft=help:norl:
