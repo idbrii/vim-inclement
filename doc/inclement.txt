@@ -57,6 +57,7 @@ g:inclement_include_directories                   *g:inclement_include_directori
         A |bar|-separated list of directories to strip from the include path.
         Using `let g:inclement_include_directories = "lib|src"` will convert
         `~/project/src/lib/gamera/init.lua` into `gamera/init.lua`
+        which inclement will convert into `require "gamera"` .
 
 g:inclement_src_root                              *g:inclement_src_root*
         Default: ''

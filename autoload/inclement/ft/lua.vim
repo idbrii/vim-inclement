@@ -23,7 +23,9 @@ function! inclement#ft#lua#GetPrefix(tag_dict)
 endf
 
 function! inclement#ft#lua#ConvertFilepathToImportPath(path)
-    return substitute(a:path, '\V/', '.', 'g')
+    " Import folders containing init.lua and not that file.
+    let p = substitute(a:path, '/init$', '', '')
+    return substitute(p, '\V/', '.', 'g')
 endf
 
 function! inclement#ft#lua#GetImport(tag_dict)
