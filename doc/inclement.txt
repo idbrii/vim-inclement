@@ -52,6 +52,12 @@ g:inclement_after_first_include                   *g:inclement_after_first_inclu
         Place the include after the first include in the file. Otherwise it's
         after the last include.
 
+g:inclement_include_directories                   *g:inclement_include_directories*
+        Default: ''
+        A |bar|-separated list of directories to strip from the include path.
+        Using `let g:inclement_include_directories = "lib|src"` will convert
+        `~/project/src/lib/gamera/init.lua` into `gamera/init.lua`
+
 g:inclement_src_root                              *g:inclement_src_root*
         Default: ''
         When you setup your project, set this to the root of your source

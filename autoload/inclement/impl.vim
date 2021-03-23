@@ -149,6 +149,10 @@ function! s:InsertHeader(taginfo)
         silent exec "pedit +" . l:to_insert_after
     endif
 
+
+    let include_directories = get(b:, 'inclement_include_directories', g:inclement_include_directories)
+    " include_directories is a bar-separated list of directory names
+    let l:path = substitute(l:path, '^.*\v<('.. include_directories ..')>/', '', '')
     let l:path = inclement#ft#{&filetype}#ConvertFilepathToImportPath(l:path)
     " We only support quotes! See below.
 	let l:text = l:import_cmd. '"' . l:path . '"'
