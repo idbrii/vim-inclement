@@ -25,23 +25,13 @@ end
 let g:inclement_show_include = get(g:, 'inclement_show_include', s:default_show)
 unlet s:default_show
 
-if !exists('g:inclement_n_dir_to_trim')
-    let g:inclement_n_dir_to_trim = 0
-end
-if !exists('g:inclement_max_element_in_path')
-    let g:inclement_max_element_in_path = 0
-end
-if !exists('g:inclement_after_first_include')
-    let g:inclement_after_first_include = 0
-end
-if !exists("g:inclement_include_directories")
-    let g:inclement_include_directories = ''
-endif
+let g:inclement_n_dir_to_trim = get(g:, 'inclement_n_dir_to_trim', 0)
+let g:inclement_max_element_in_path = get(g:, 'inclement_max_element_in_path', 0)
+let g:inclement_after_first_include = get(g:, 'inclement_after_first_include', 0)
+let g:inclement_include_directories = get(g:, 'inclement_include_directories', '')
 " When you setup your project, set this to the root of your source folder so
 " we can strip this path from any includes.
-if !exists('g:inclement_src_root')
-    let g:inclement_src_root = ''
-end
+let g:inclement_src_root = get(g:, 'inclement_src_root', '')
 
 
 " Save compatibility options
