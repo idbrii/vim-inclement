@@ -145,6 +145,11 @@ function! s:InsertHeader(taginfo)
         " Use the preview window to show the include
         " Use height=2 because we open preview before we put line (to
         " avoid unsaved error). So we show the line before and the include.
+        " Bug: Since we open the preview before inserting the include, if
+        " we're inserting on the first line, it won't display in the preview.
+        " I think the only way around that is to save the file and open
+        " preview after. We could improve behaviour by skipping past blank
+        " lines and comments.
         set previewheight=2
         silent exec "pedit +" . l:to_insert_after
     endif
