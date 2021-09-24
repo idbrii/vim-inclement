@@ -24,7 +24,7 @@ endfunction
 "
 " Given club/barmanager.h, this produces the header guard BARMANAGER_H.
 function! inclement#impl#FixGuard()
-	let l:save_cursor = getpos(".")
+	let l:save_cursor = getcurpos()
 	let l:path = expand("%") 
 
 	" Compute the guard value
@@ -84,7 +84,7 @@ endfunction
 " Purpose: Add a header path to the file.
 function! s:InsertHeader(taginfo)
     " Save the current cursor so we can restore on error or completion
-	let l:save_cursor = getpos(".")
+	let l:save_cursor = getcurpos()
 
     let l:path = a:taginfo[0]
     if !b:inclement_is_extension_relevant
@@ -185,10 +185,11 @@ function! s:InsertHeader(taginfo)
     " Set lastpos mark so you can easily jump back to coding with ``
     call setpos("'`", l:save_cursor)
 
-    if ( g:inclement_use_preview )
-        " We have the preview window, so main doesn't need to show include
-        call setpos(".", l:save_cursor)
+    if !g:inclement_use_preview
+        let l:save_cursor = [0, l:to_insert_after, 1, 0, 1]
+        " else: We have the preview window, so main doesn't need to show include
     endif
+    call setpos(".", l:save_cursor)
 endfunction
 
 function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
