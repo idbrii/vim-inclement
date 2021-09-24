@@ -11,10 +11,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! s:has_filter(ft)
+function! s:has_filter(ft) abort
     let func = 'autoload/inclement/ft/'.a:ft.'.vim'
     return !empty(globpath(&runtimepath, func))
-endfunction
+endf
 
 
 
@@ -23,7 +23,7 @@ endfunction
 " Only supports C++
 "
 " Given club/barmanager.h, this produces the header guard BARMANAGER_H.
-function! inclement#impl#FixGuard()
+function! inclement#impl#FixGuard() abort
 	let l:save_cursor = getcurpos()
 	let l:path = expand("%") 
 
@@ -56,7 +56,7 @@ function! inclement#impl#FixGuard()
 
 	" Restore cursor position
 	call setpos('.', l:save_cursor)
-endfunction
+endf
 
 
 
@@ -65,7 +65,7 @@ endfunction
 "
 " TODO: This could be improved to take a skip count so we could cycle between
 " the headers.
-function! s:GetHeaderForTag(tag_expr)
+function! s:GetHeaderForTag(tag_expr) abort
 	let l:tags = taglist(a:tag_expr)
 	for tag in l:tags
 		" Convert to forward slashes.
@@ -79,10 +79,10 @@ function! s:GetHeaderForTag(tag_expr)
 
 	endfor
 	return []
-endfunction
+endf
 
 " Purpose: Add a header path to the file.
-function! s:InsertHeader(taginfo)
+function! s:InsertHeader(taginfo) abort
     " Save the current cursor so we can restore on error or completion
 	let l:save_cursor = getcurpos()
     let winview = winsaveview()
@@ -212,9 +212,9 @@ function! s:InsertHeader(taginfo)
         call setpos("'`", l:cursor_at_include)
         call setpos(".", l:save_cursor)
     endif
-endfunction
+endf
 
-function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
+function! inclement#impl#AddIncludeForTag_Impl(tag_expr) abort
     if !s:has_filter(&filetype)
       if get(g:, 'inclement_report_ft_error', 1)
         echoerr 'inclement does not yet support '. &filetype
@@ -231,7 +231,7 @@ function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
 	endif
 
 	call s:InsertHeader(header)
-endfunction
+endf
 
 
 " Reset compat options

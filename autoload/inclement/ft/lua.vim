@@ -1,6 +1,6 @@
 " File: vim-inclement -- Great stuff for includes
 
-function! inclement#ft#lua#init()
+function! inclement#ft#lua#init() abort
     " Extension is not used in require statements.
     let b:inclement_is_extension_relevant = 0
     let b:inclement_header_extensions = ["lua"]
@@ -9,12 +9,12 @@ function! inclement#ft#lua#init()
 endf
 
 
-function! inclement#ft#lua#GetExistingImportRegex(imported_file)
+function! inclement#ft#lua#GetExistingImportRegex(imported_file) abort
     return '\v^.*<require>[^"]*"(.*[\/\\])?'. a:imported_file .'"'
 endf
 
 
-function! inclement#ft#lua#GetPrefix(tag_dict)
+function! inclement#ft#lua#GetPrefix(tag_dict) abort
     if a:tag_dict["kind"] == "v"
         return "local ". a:tag_dict["name"] ." = "
     else
@@ -22,12 +22,12 @@ function! inclement#ft#lua#GetPrefix(tag_dict)
     endif
 endf
 
-function! inclement#ft#lua#ConvertFilepathToImportPath(path)
+function! inclement#ft#lua#ConvertFilepathToImportPath(path) abort
     " Import folders containing init.lua and not that file.
     let p = substitute(a:path, '/init$', '', '')
     return substitute(p, '\V/', '.', 'g')
 endf
 
-function! inclement#ft#lua#GetImport(tag_dict)
+function! inclement#ft#lua#GetImport(tag_dict) abort
     return inclement#ft#lua#GetPrefix(a:tag_dict). 'require '
 endf
