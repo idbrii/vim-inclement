@@ -10,7 +10,7 @@ endf
 
 
 function! inclement#ft#lua#GetExistingImportRegex(imported_file) abort
-    return '\v^.*<require>[^"]*"(.*[\/\\])?'. a:imported_file .'"'
+    return '\v^.*<require>[^"]*"(.*[.\/\\])?'. a:imported_file .'"'
 endf
 
 
