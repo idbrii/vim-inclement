@@ -1,6 +1,6 @@
 " File: vim-inclement -- Great stuff for includes
 " Maintainer: David Briscoe (idbrii@gmail.com)
-" Version: 0.3
+" Version: 0.4
 " based on dice.vim by Andreas Fredriksson
 "
 " Functionality:
@@ -16,9 +16,15 @@ let loaded_inclement = 1
 
 
 " Ensure our settings variables exist and set defaults
-if !exists('g:inclement_use_preview')
-    let g:inclement_use_preview = 0
+
+let s:default_show = 'jump'
+if get(g:, 'inclement_use_preview', 0)
+	let s:default_show = 'preview'
+	echomsg "inclement_use_preview is deprecated. Use inclement_show_include = 'preview' instead."
 end
+let g:inclement_show_include = get(g:, 'inclement_show_include', s:default_show)
+unlet s:default_show
+
 if !exists('g:inclement_n_dir_to_trim')
     let g:inclement_n_dir_to_trim = 0
 end

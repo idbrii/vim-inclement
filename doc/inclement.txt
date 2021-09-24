@@ -32,9 +32,16 @@ Mappings~
 						  *inclement-configuration*
 Configuration~
 
-g:inclement_use_preview                           *g:inclement_use_preview*
-        Default: 0
-        Open the preview window to show the new include.
+g:inclement_show_include                           *g:inclement_show_include*
+        Default: "jump"
+	How to display the inserted include.
+
+    "jump": Set `` |mark| to last cursor position and Move the cursor to the
+	include.
+    "echo": Maintain cursor position, set `` |mark| to include line, and
+	echo the include line.
+    "preview": Maintain cursor position, set `` |mark| to include line, and
+	open the preview window to show the include.
 
 g:inclement_n_dir_to_trim                         *g:inclement_n_dir_to_trim*
         Default: 0

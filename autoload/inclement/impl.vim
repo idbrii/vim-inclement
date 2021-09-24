@@ -85,7 +85,10 @@ endfunction
 function! s:InsertHeader(taginfo)
     " Save the current cursor so we can restore on error or completion
 	let l:save_cursor = getcurpos()
+    let winview = winsaveview()
 
+    let use_preview = g:inclement_show_include == 'preview'
+    
     let l:path = a:taginfo[0]
     if !b:inclement_is_extension_relevant
         " Strip the extension.
@@ -116,7 +119,7 @@ function! s:InsertHeader(taginfo)
         " Include already exists. Inform the user.
 
         call setpos(".", l:save_cursor)
-        if ( g:inclement_use_preview )
+        if use_preview
             " Use the preview window to show the include
             set previewheight=1
             silent exec "pedit +" . l:iline
@@ -141,7 +144,7 @@ function! s:InsertHeader(taginfo)
 	" append append on the first line in the file.
 	let l:to_insert_after = search(b:inclement_find_import_re, l:flags)
 
-    if ( g:inclement_use_preview )
+    if use_preview
         " Use the preview window to show the include
         " Use height=2 because we open preview before we put line (to
         " avoid unsaved error). So we show the line before and the include.
@@ -164,6 +167,13 @@ function! s:InsertHeader(taginfo)
 	call append(l:to_insert_after, l:text)
     " We inserted a line, so change the cursor position
     let l:save_cursor[1] += 1
+    let winview.lnum += 1
+    if l:to_insert_after != winview.topline - 1
+        " Maintain current window *unless* include is inserted on that line --
+        " then we'd want to see it appear.
+        let winview.topline += 1
+    endif
+    
 
     " Get in position to fix the include and auto trim some directories.
     " We always insert quotes around include, so we can assume there's a quote
@@ -187,14 +197,21 @@ function! s:InsertHeader(taginfo)
         normal ca";
     endif
 
-    " Set lastpos mark so you can easily jump back to coding with ``
-    call setpos("'`", l:save_cursor)
+    let l:cursor_at_include = [0, l:to_insert_after, 1, 0, 1]
 
-    if !g:inclement_use_preview
-        let l:save_cursor = [0, l:to_insert_after, 1, 0, 1]
-        " else: We have the preview window, so main doesn't need to show include
+    if g:inclement_show_include == 'echo'
+        echo getline(l:to_insert_after + 1)
+    end
+
+    if g:inclement_show_include == 'jump'
+        " Set lastpos mark so you can easily jump back to coding with ``
+        call setpos("'`", l:save_cursor)
+        call setpos(".", l:cursor_at_include)
+    else
+        call winrestview(winview)
+        call setpos("'`", l:cursor_at_include)
+        call setpos(".", l:save_cursor)
     endif
-    call setpos(".", l:save_cursor)
 endfunction
 
 function! inclement#impl#AddIncludeForTag_Impl(tag_expr)
