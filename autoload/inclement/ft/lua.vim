@@ -5,12 +5,12 @@ function! inclement#ft#lua#init() abort
     let b:inclement_is_extension_relevant = 0
     let b:inclement_header_extensions = ["lua"]
 
-    let b:inclement_find_import_re = '\v^.*<require>'
+    let b:inclement_find_import_re = '\v\C^.*<require>'
 endf
 
 
 function! inclement#ft#lua#GetExistingImportRegex(imported_file) abort
-    return '\v^.*<require>[^"]*"(.*[.\/\\])?'. a:imported_file .'"'
+    return '\v\C^.*<require>[^"]*"(.*[.\/\\])?'. a:imported_file .'"'
 endf
 
 

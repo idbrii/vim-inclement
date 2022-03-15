@@ -7,11 +7,12 @@ function! inclement#ft#cs#init() abort
     " TODO: use tag_dict.name instead.
     let b:inclement_max_element_in_path = 1
 
-    let b:inclement_find_import_re = '^\s*using\s'
+    let b:inclement_find_import_re = '^\v\C\s*using\s'
 endf
 
 function! inclement#ft#cs#GetExistingImportRegex(imported_file) abort
-    return '\v^.*<using>\s+.*'. a:imported_file .';'
+    " Case-insensitive since we're using files to estimate namespaces
+    return '\v\c^.*<using>\s+.*'. a:imported_file .';'
 endf
 
 function! inclement#ft#cs#ConvertFilepathToImportPath(path) abort
