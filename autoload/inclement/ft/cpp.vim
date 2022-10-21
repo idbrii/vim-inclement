@@ -16,6 +16,10 @@ function! inclement#ft#cpp#ConvertFilepathToImportPath(path) abort
     return a:path
 endf
 
+function! inclement#ft#cpp#FilterTagsForInclude(tags) abort
+    return a:tags
+endf
+
 function! inclement#ft#cpp#GetImport(tag_dict) abort
     return '#include '
 endf

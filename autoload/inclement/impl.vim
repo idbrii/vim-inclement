@@ -59,25 +59,36 @@ function! inclement#impl#FixGuard() abort
 endf
 
 
+function! inclement#impl#IsHeader(tag_info) abort
+    let fname = a:tag_info.filename
+    let ext = fnamemodify(fname, ":e")
+    return index(b:inclement_header_extensions, ext) == 0
+endf
 
 " Purpose: Return the first header-based match for the specified tag
 " expression.
+function! s:PickFirstHeader(tags) abort
+    let i = indexof(a:tags, {idx, tag -> inclement#impl#IsHeader(tag)})
+    if i >= 0
+        return a:tags[i]
+    end
+    return {}
+endf
+
+" Purpose: Return the first match for the specified tag expression.
 "
 " TODO: This could be improved to take a skip count so we could cycle between
 " the headers.
 function! s:GetHeaderForTag(tag_expr) abort
-	let l:tags = taglist(a:tag_expr)
-	for tag in l:tags
+	let tags = taglist(a:tag_expr)
+	let tags = inclement#ft#{&filetype}#FilterTagsForInclude(tags)
+	let tag = s:PickFirstHeader(tags)
+	if !empty(tag)
 		" Convert to forward slashes.
-		let l:fn = substitute(tag["filename"], "\\", "/", "g")
-		let l:fnext = fnamemodify(l:fn, ":e")
+		let fname = substitute(tag["filename"], "\\", "/", "g")
 
-		" Use header files straight away.
-		if index(b:inclement_header_extensions, l:fnext) >= 0
-			return [l:fn, tag]
-		endif
-
-	endfor
+		return [fname, tag]
+    endif
 	return []
 endf
 

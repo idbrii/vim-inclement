@@ -28,6 +28,12 @@ function! inclement#ft#lua#ConvertFilepathToImportPath(path) abort
     return substitute(p, '\V/', '.', 'g')
 endf
 
+function! inclement#ft#lua#FilterTagsForInclude(tags) abort
+    " ltags seems to only support kinds: m, v, f
+    " methods (m) are inside classes, so they aren't relevant for includes.
+    return filter(a:tags, {idx, tag -> tag.kind != 'm'})
+endf
+
 function! inclement#ft#lua#GetImport(tag_dict) abort
     return inclement#ft#lua#GetPrefix(a:tag_dict). 'require '
 endf

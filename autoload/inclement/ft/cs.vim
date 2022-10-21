@@ -21,6 +21,10 @@ function! inclement#ft#cs#ConvertFilepathToImportPath(path) abort
     return a:path
 endf
 
+function! inclement#ft#cs#FilterTagsForInclude(tags) abort
+    return a:tags
+endf
+
 function! inclement#ft#cs#GetImport(tag_dict) abort
     return 'using '. get(a:tag_dict, 'namespace', 'error: no import without namespace')
 endf
