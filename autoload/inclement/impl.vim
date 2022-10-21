@@ -24,38 +24,38 @@ endf
 "
 " Given club/barmanager.h, this produces the header guard BARMANAGER_H.
 function! inclement#impl#FixGuard() abort
-	let l:save_cursor = getcurpos()
-	let l:path = expand("%") 
+    let l:save_cursor = getcurpos()
+    let l:path = expand("%")
 
-	" Compute the guard value
-	let l:guard = substitute(l:path, '\([a-z]\)', '\u\1', 'g')
-	let l:guard = substitute(l:guard, '\.', '_', 'g')
-	let l:guard = substitute(l:guard, '^[^A-Z0-9_].*', '', 'g')
+    " Compute the guard value
+    let l:guard = substitute(l:path, '\([a-z]\)', '\u\1', 'g')
+    let l:guard = substitute(l:guard, '\.', '_', 'g')
+    let l:guard = substitute(l:guard, '^[^A-Z0-9_].*', '', 'g')
 
-	" See if we can find the #ifndef/#define pair
-	call cursor(1, 1)
+    " See if we can find the #ifndef/#define pair
+    call cursor(1, 1)
 
-	let l:guard_found = 0
-	let l:gline = search('^\s*#ifndef\s\+[A-Za-z0-9_]\+\s*', 'nc')
+    let l:guard_found = 0
+    let l:gline = search('^\s*#ifndef\s\+[A-Za-z0-9_]\+\s*', 'nc')
 
-	if l:gline > 0
-		let l:oldguard = substitute(getline(l:gline), '^#\s*ifndef\s\+\([A-Za-z0-9_]\+\)\s*$', '\1', '')
-		let l:dpat = '^#\s*define\s\+' . l:oldguard . '\s*$'
-		let l:dline = search(l:dpat, 'Wn')
+    if l:gline > 0
+        let l:oldguard = substitute(getline(l:gline), '^#\s*ifndef\s\+\([A-Za-z0-9_]\+\)\s*$', '\1', '')
+        let l:dpat = '^#\s*define\s\+' . l:oldguard . '\s*$'
+        let l:dline = search(l:dpat, 'Wn')
 
-		if l:dline == l:gline + 1
-			let l:guard_found = 1
-			call setline(l:gline, '#ifndef ' . l:guard)
-			call setline(l:dline, '#define ' . l:guard)
-		endif
-	endif
+        if l:dline == l:gline + 1
+            let l:guard_found = 1
+            call setline(l:gline, '#ifndef ' . l:guard)
+            call setline(l:dline, '#define ' . l:guard)
+        endif
+    endif
 
-	if 0 == l:guard_found
-		echo "Failed to find header guard"
-	endif
+    if 0 == l:guard_found
+        echo "Failed to find header guard"
+    endif
 
-	" Restore cursor position
-	call setpos('.', l:save_cursor)
+    " Restore cursor position
+    call setpos('.', l:save_cursor)
 endf
 
 
@@ -80,26 +80,26 @@ endf
 " TODO: This could be improved to take a skip count so we could cycle between
 " the headers.
 function! s:GetHeaderForTag(tag_expr) abort
-	let tags = taglist(a:tag_expr)
-	let tags = inclement#ft#{&filetype}#FilterTagsForInclude(tags)
-	let tag = s:PickFirstHeader(tags)
-	if !empty(tag)
-		" Convert to forward slashes.
-		let fname = substitute(tag["filename"], "\\", "/", "g")
+    let tags = taglist(a:tag_expr)
+    let tags = inclement#ft#{&filetype}#FilterTagsForInclude(tags)
+    let tag = s:PickFirstHeader(tags)
+    if !empty(tag)
+        " Convert to forward slashes.
+        let fname = substitute(tag["filename"], "\\", "/", "g")
 
-		return [fname, tag]
+        return [fname, tag]
     endif
-	return []
+    return []
 endf
 
 " Purpose: Add a header path to the file.
 function! s:InsertHeader(taginfo) abort
     " Save the current cursor so we can restore on error or completion
-	let l:save_cursor = getcurpos()
+    let l:save_cursor = getcurpos()
     let winview = winsaveview()
 
     let use_preview = g:inclement_show_include == 'preview'
-    
+
     let l:path = a:taginfo[0]
     if !b:inclement_is_extension_relevant
         " Strip the extension.
@@ -117,7 +117,7 @@ function! s:InsertHeader(taginfo) abort
     " Check if including the current file
     let l:currentfile = expand('%:b')
     let l:samefile = match(l:currentfile, l:filename)
-	if l:samefile == 0
+    if l:samefile == 0
         call setpos(".", l:save_cursor)
         echo 'include is current file'
         return
@@ -125,8 +125,8 @@ function! s:InsertHeader(taginfo) abort
 
     " Check if include already exists
     let l:pattern = inclement#ft#{&filetype}#GetExistingImportRegex(l:filename)
-	let l:iline = search(l:pattern)
-	if l:iline > 0
+    let l:iline = search(l:pattern)
+    if l:iline > 0
         " Include already exists. Inform the user.
 
         call setpos(".", l:save_cursor)
@@ -140,20 +140,20 @@ function! s:InsertHeader(taginfo) abort
         endif
 
         return
-	endif
+    endif
 
-	if ( g:inclement_after_first_include )
-		" Search forwards for the first include.
-		normal! 0G
-		let l:flags = ''
-	else
-		" Search backwards for the last include.
-		normal! G
-		let l:flags = 'b'
-	endif
-	" search() will return 0 if there are no matches, which will make the
-	" append append on the first line in the file.
-	let l:to_insert_after = search(b:inclement_find_import_re, l:flags)
+    if ( g:inclement_after_first_include )
+        " Search forwards for the first include.
+        normal! 0G
+        let l:flags = ''
+    else
+        " Search backwards for the last include.
+        normal! G
+        let l:flags = 'b'
+    endif
+    " search() will return 0 if there are no matches, which will make the
+    " append append on the first line in the file.
+    let l:to_insert_after = search(b:inclement_find_import_re, l:flags)
 
     if use_preview
         " Use the preview window to show the include
@@ -174,8 +174,8 @@ function! s:InsertHeader(taginfo) abort
     let l:path = substitute(l:path, '^.*\v<('.. include_directories ..')>/', '', '')
     let l:path = inclement#ft#{&filetype}#ConvertFilepathToImportPath(l:path)
     " We only support quotes! See below.
-	let l:text = l:import_cmd. '"' . l:path . '"'
-	call append(l:to_insert_after, l:text)
+    let l:text = l:import_cmd. '"' . l:path . '"'
+    call append(l:to_insert_after, l:text)
     " We inserted a line, so change the cursor position
     let l:save_cursor[1] += 1
     let winview.lnum += 1
@@ -184,7 +184,7 @@ function! s:InsertHeader(taginfo) abort
         " then we'd want to see it appear.
         let winview.topline += 1
     endif
-    
+
 
     " Get in position to fix the include and auto trim some directories.
     " We always insert quotes around include, so we can assume there's a quote
@@ -197,7 +197,7 @@ function! s:InsertHeader(taginfo) abort
     " element. This doesn't make much sense when not using files.
     let max_element_in_path = get(b:, 'inclement_max_element_in_path', g:inclement_max_element_in_path)
     if max_element_in_path > 0
-		normal! $
+        normal! $
         exec 'normal! ' . max_element_in_path . 'T/dT"'
     endif
     normal! 0f"l
@@ -227,21 +227,21 @@ endf
 
 function! inclement#impl#AddIncludeForTag_Impl(tag_expr) abort
     if !s:has_filter(&filetype)
-      if get(g:, 'inclement_report_ft_error', 1)
-        echoerr 'inclement does not yet support '. &filetype
-      endif
-      return
+        if get(g:, 'inclement_report_ft_error', 1)
+            echoerr 'inclement does not yet support '. &filetype
+        endif
+        return
     endif
     call inclement#ft#{&filetype}#init()
 
-	let l:header = s:GetHeaderForTag(a:tag_expr)
+    let l:header = s:GetHeaderForTag(a:tag_expr)
 
-	if len(l:header) == 0
-		echo "No header declaring '" . a:tag_expr . "' found in tags"
-		return
-	endif
+    if len(l:header) == 0
+        echo "No header declaring '" . a:tag_expr . "' found in tags"
+        return
+    endif
 
-	call s:InsertHeader(header)
+    call s:InsertHeader(header)
 endf
 
 
